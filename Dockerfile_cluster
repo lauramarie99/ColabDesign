@@ -38,6 +38,7 @@ RUN apt-get -q update \
   decorator==5.1.0 \
   hydra-core==1.3.2 \
   pyrsistent==0.19.3 \
+  icecream==2.1.3 \
   RFdiffusion/env/SE3Transformer 
   
 RUN python3.9 -m pip install --no-cache-dir ./RFdiffusion --no-deps
