@@ -1,0 +1,20 @@
+diffusion:
+  name: Test_enzyme
+  contigs: "10-50/A130-130/10-50/A176-176/10-50/A208-208/10-50"
+  pdb: "input_pdbs/7nei_L210T_2pet_15337.pdb"
+  iterations: 50
+  num_designs: 5
+  ckpt_override_path: "./RFdiffusion/models/ActiveSite_ckpt.pt"
+  enzyme_design: True
+  guide_scale: 1
+  guide_potentials: "type:substrate_contacts,s:1,r_0:8,rep_r_0:5.0,rep_s:2,rep_r_min:1"
+  substrate: "2PE"
+  symmetry: "null" #@param ["null", "auto", "cyclic", "dihedral"]
+  noise_scale: 1
+
+validation:
+  num_seqs: 5
+  initial_guess: False
+  num_recycles: 1
+  use_multimer: False
+  rm_aa: ""

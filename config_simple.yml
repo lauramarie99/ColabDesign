@@ -1,0 +1,20 @@
+diffusion:
+  name: Test_simple
+  contigs: "100"
+  pdb: "null"
+  iterations: 50
+  num_designs: 5
+  ckpt_override_path: "null"
+  enzyme_design: False
+  guide_scale: 10
+  guide_potentials: "null"
+  substrate: "null"
+  symmetry: "null" #@param ["null", "auto", "cyclic", "dihedral"]
+  noise_scale: 1
+
+validation:
+  num_seqs: 5
+  initial_guess: False
+  num_recycles: 1
+  use_multimer: False
+  rm_aa: "" # Bias, make aa less likely
