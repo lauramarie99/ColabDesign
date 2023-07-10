@@ -48,5 +48,5 @@ RUN python3.9 -m pip install numpy scipy six wheel -f https://storage.googleapis
 
 
 RUN python3.9 -m pip -q install git+https://github.com/sokrypton/ColabDesign.git
-
+RUN ln -s /usr/local/lib/python3.9/dist-packages/colabdesign colabdesign
 RUN python3.9 -m pip install ipykernel
