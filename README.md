@@ -1,3 +1,29 @@
+# Protein Design with RFDiffusion and ProteinMPNN
+
+### Overview
+- diffuse_and_validate_main.py: Main
+- diffuse_and_validate_utils.py: Selection of important functions
+- config_simple: Example config file for unconditional diffusion and validation
+- config_enzyme: Example config file for enzyme desgin with external potential
+- Dockerfile_cluster: Dockerfile
+- diffuse_and_validate_felipe_mod.py: Felipes version of diffuse_and_validate
+
+### Setup
+#### RosettaFold models
+``mkdir models && cd models`` \
+``wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt`` \
+``wget http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt``
+
+#### AlphaFold models
+``mkdir params`` \
+``aria2c -q -x 16 https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar``\
+``tar -xf alphafold_params_2022-12-06.tar -C params`` \
+``touch params/done.txt``
+
+### Run
+``python diffuse_and_validate_main.py --config config.yml``
+
+
 # ColabDesign
 ### Making Protein Design accessible to all via Google Colab! 
 - P(structure | sequence)
