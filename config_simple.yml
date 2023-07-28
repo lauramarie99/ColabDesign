@@ -1,9 +1,10 @@
 diffusion:
-  name: Test_simple
-  contigs: "100"
+  name: "Test_simple_4"
+  path: "./outputs/"
+  contigs: "100-100"
   pdb: "null"
   iterations: 50
-  num_designs: 5
+  num_designs: 1
   ckpt_override_path: "null"
   enzyme_design: False
   guide_scale: 10
