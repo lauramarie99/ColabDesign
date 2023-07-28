@@ -26,7 +26,7 @@ def run(command, trigger, total_timesteps):
     #progress.description = "done"
 
 # Run diffusion
-def run_diffusion(contigs, name, 
+def run_diffusion(contigs, name, path,
                   pdb=None, 
                   iterations=50,
                   symmetry="null", 
