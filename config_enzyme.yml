@@ -1,5 +1,6 @@
 diffusion:
-  name: Test_enzyme
+  name: "Test_enzyme"
+  path: "./outputs/"
   contigs: "10-50/A130-130/10-50/A176-176/10-50/A208-208/10-50"
   pdb: "input_pdbs/7nei_L210T_2pet_15337.pdb"
   iterations: 50
