@@ -36,6 +36,8 @@ for n in range(num_contigs):
         if lb != ub:
             random_number = random.randint(lb,ub)
             new_contig_sections.append(str(random_number) + "-" + str(random_number))
+        else:
+            new_contig_sections.append(str(lb) + "-" + str(lb))
     new_contig = '/'.join(new_contig_sections)
     counter = 0
     # Make config for each value in noise scale list and guide scale list
