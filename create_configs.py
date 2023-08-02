@@ -41,14 +41,30 @@ for n in range(num_contigs):
     new_contig = '/'.join(new_contig_sections)
     counter = 0
     # Make config for each value in noise scale list and guide scale list
-    for noise in noise_scale:
-        for scale in guide_scale:
+    if args_diffusion['enzyme_design']:
+        for noise in noise_scale:
+            for scale in guide_scale:
+                config_name = name + '_' + str(n) + '_' + setups[counter]
+                yaml_dict['diffusion'] = args_diffusion
+                yaml_dict['diffusion']['name'] = config_name
+                yaml_dict['diffusion']['path'] = resultsdir
+                yaml_dict['diffusion']['contigs'] = new_contig
+                yaml_dict['diffusion']['guide_scale'] = scale
+                yaml_dict['diffusion']['noise_scale'] = noise 
+                yaml_dict['validation'] = args_validation
+
+                file = open(configdir + config_name + ".yml","w")
+                yaml.dump(yaml_dict,file)
+                file.close()
+                counter += 1
+    
+    else:
+        for noise in noise_scale:
             config_name = name + '_' + str(n) + '_' + setups[counter]
             yaml_dict['diffusion'] = args_diffusion
             yaml_dict['diffusion']['name'] = config_name
             yaml_dict['diffusion']['path'] = resultsdir
             yaml_dict['diffusion']['contigs'] = new_contig
-            yaml_dict['diffusion']['guide_scale'] = scale
             yaml_dict['diffusion']['noise_scale'] = noise 
             yaml_dict['validation'] = args_validation
 
