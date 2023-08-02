@@ -1,27 +1,44 @@
 # Protein Design with RFDiffusion and ProteinMPNN
+Proteins are designed using RFDiffusion based on given constraints. 
+Sequences are generated using ProteinMPNN and validated using AlphaFold.\
+Have fun!
 
-### Overview
-- diffuse_and_validate_main.py: Main
-- diffuse_and_validate_utils.py: Selection of important functions
+## Overview
+- diffuse.py: Diffusion
+- validate.py: Validation (ProteinMPNN + AF2)
 - config_simple: Example config file for unconditional diffusion and validation
-- config_enzyme: Example config file for enzyme desgin with external potential
+- config_enzyme: Example config file for enzyme design with external potential
+- create_configs.py: Creates configs file based on experimental setup
+- run_cluster.py: Automate slurm job submission in cluster
 - Dockerfile_cluster: Dockerfile
-- diffuse_and_validate_felipe_mod.py: Felipes version of diffuse_and_validate
+- diffuse_and_validate.py: Diffusion and Validation in one script
 
-### Setup
-#### RosettaFold models
+## Setup
+- Build docker container
+- Clone repository
+- Clone RFDiffusion repo inside ColabDesign repo (https://github.com/sokrypton/RFdiffusion)
+- Make outputs directory and get RF models \
+``mkdir outputs``\
 ``mkdir models && cd models`` \
 ``wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt`` \
 ``wget http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt``
-
-#### AlphaFold models
+- Get AF models \
 ``mkdir params`` \
 ``aria2c -q -x 16 https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar``\
 ``tar -xf alphafold_params_2022-12-06.tar -C params`` \
 ``touch params/done.txt``
 
-### Run
-``python diffuse_and_validate_main.py --config config.yml``
+## Get started
+For diffusion and validation the same contig is used. It contains all information needed.
+
+### Run diffusion
+``python3.9 diffuse.py --config config.yml``
+
+### Run validation
+``python3.9 diffuse.py --config config.yml``
+
+## Config Generation
+For generation of the config files, the script create_configs.py can be used.
 
 
 # ColabDesign
