@@ -38,7 +38,8 @@ def run_diffusion(contigs, name, path,
                   substrate="",
                   ckpt_override_path="null",
                   enzyme_design=True,
-                  noise_scale=1):
+                  noise_scale=1,
+                  deterministic=False):
     """
     This function runs a diffusion simulation using provided input parameters, 
     applies symmetry and contigs processing, and generates the final PDB structures.
@@ -152,6 +153,9 @@ def run_diffusion(contigs, name, path,
         opts.append(f"potentials.guide_scale={guide_scale}")
         opts.append(f"'potentials.guiding_potentials=[\"{guide_potentials}\"]'")
         opts.append(f"potentials.substrate={substrate}")
+
+    if deterministic:
+        opts.append(f"inference.deterministic=True")
 
     # Print different parameters for diagnostic purposes
     print("mode:", mode)
