@@ -2,6 +2,7 @@
 import random
 import argparse
 import yaml
+import os
 
 # Get config
 parser = argparse.ArgumentParser()
@@ -22,6 +23,8 @@ guide_scale = args_general['guide_scale']
 configdir = args_general['configdir']
 resultsdir = args_general['resultsdir']
 yaml_dict = {}
+if not os.path.exists(configdir):
+   os.makedirs(configdir)
 
 # Create random contig
 for n in range(num_contigs):
