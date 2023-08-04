@@ -2,8 +2,10 @@
 import subprocess, glob, time, os
 
 # Create a slurm script
-def create_slurm_script(slurm_path, container, config, script, outdir, name, jobname, time='24:00:00', mem='10000', 
-                        cpus=1, gpu='a30:1', partition='paula', email='zo23uqar@studserv.uni-leipzig.de', emailType='FAIL'):
+def create_slurm_script(slurm_path, container, config, script, outdir, name, jobname, 
+                        time='24:00:00', mem='10000', cpus=1, gpu='a30:1', partition='paula', 
+                        email='zo23uqar@studserv.uni-leipzig.de', emailType='FAIL',
+                        excludeNodes='paula02,paula04'):
     with open(f'{slurm_path}/{name}.slurm', 'w') as slurmFile:
         slurmFile.writelines([
                 "#!/bin/bash\n",
@@ -17,7 +19,7 @@ def create_slurm_script(slurm_path, container, config, script, outdir, name, job
                 f"#SBATCH --partition={partition}\n",
                 f"#SBATCH --mail-user={email}\n",
                 f"#SBATCH --mail-type={emailType}\n",
-                f"#SBATCH --partition={partition}\n"
+                f"#SBATCH --exclude={excludeNodes}\n"
         ])
         slurmFile.writelines([
                 '# define CONTAINER\n',
@@ -138,7 +140,7 @@ def run_diffusion(config_path, slurm_path, container):
         name = config_file.split('/')[-1].split('.')[0]
         create_slurm_script(slurm_path=slurm_path,container=container,config=config_file,script="python3.9 /home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/ColabDesign/diffuse.py",
                             outdir=slurm_path,name=f"{name}_diffusion",jobname=f"diffusion-{name}", time="24:00:00", mem="10000", cpus=1,
-                            gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",emailType="FAIL")
+                            gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",emailType="NONE",excludeNodes='paula02,paula04')
     job_ids, errors = run_all_slurm_scripts(slurm_path=slurm_path)
     return job_ids, errors
 
@@ -173,9 +175,9 @@ def run_validation(config_path, slurm_path, diffusion_job_ids, container):
             #print("Diffusion done:", exp_name)
             config_file = f"{config_path}{exp_name}.yml"
             slurm_name = f"{exp_name}_validation"
-            create_slurm_script(slurm_path=f"{slurm_path}Validation",container=container,config=config_file,script="python3.9 /home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/ColabDesign/validate.py",
-                                outdir=f"{slurm_path}Validation",name=slurm_name,jobname=f"validation-{exp_name}", time="24:00:00", mem="10000", cpus=8,
-                                gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",emailType="FAIL")
+            create_slurm_script(slurm_path=f"{slurm_path}Validation",container=container,config=config_file,script="python3 /home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/ColabDesign/validate.py",
+                                outdir=f"{slurm_path}Validation",name=slurm_name,jobname=f"validation-{exp_name}", time="24:00:00", mem="10000", cpus=1,
+                                gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",emailType="NONE",excludeNodes='paula02,paula04')
             output, error = run_slurm_script(name=slurm_name, cwd=f"{slurm_path}Validation")
             validation_errors[slurm_name] = error
             if error == '':
@@ -193,9 +195,9 @@ MAIN
 
 # Global variables
 diffusion_container = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/proteindesign.sif"
-validation_container = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/proteindesign.sif"
-config_path = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/Test/Configs/"
-slurm_path = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/Test/Slurm/"
+validation_container = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/colabdesign1.1.0.sif"
+config_path = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/Run1/Configs/"
+slurm_path = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/Run1/Slurm/"
 
 
 # Run diffusion and validation
