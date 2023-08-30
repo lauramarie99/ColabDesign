@@ -20,6 +20,7 @@ contig = args_general['contigs']
 num_contigs = args_general['num_contigs']
 noise_scale = args_general['noise_scale']
 guide_scale = args_general['guide_scale']
+recycles = args_general['num_recycles']
 configdir = args_general['configdir']
 resultsdir = args_general['resultsdir']
 yaml_dict = {}
@@ -47,34 +48,38 @@ for n in range(num_contigs):
     if args_diffusion['enzyme_design']:
         for noise in noise_scale:
             for scale in guide_scale:
+                for recycle in recycles:
+                    config_name = name + '_' + str(n) + '_' + setups[counter]
+                    yaml_dict['diffusion'] = args_diffusion
+                    yaml_dict['diffusion']['name'] = config_name
+                    yaml_dict['diffusion']['path'] = resultsdir
+                    yaml_dict['diffusion']['contigs'] = new_contig
+                    yaml_dict['diffusion']['guide_scale'] = scale
+                    yaml_dict['diffusion']['noise_scale'] = noise
+                    yaml_dict['validation'] = args_validation
+                    yaml_dict['validation']['num_recycles'] = recycle
+
+                    file = open(configdir + config_name + ".yml","w")
+                    yaml.dump(yaml_dict,file)
+                    file.close()
+                    counter += 1
+    
+    else:
+        for noise in noise_scale:
+            for recycle in recycles:
                 config_name = name + '_' + str(n) + '_' + setups[counter]
                 yaml_dict['diffusion'] = args_diffusion
                 yaml_dict['diffusion']['name'] = config_name
                 yaml_dict['diffusion']['path'] = resultsdir
                 yaml_dict['diffusion']['contigs'] = new_contig
-                yaml_dict['diffusion']['guide_scale'] = scale
                 yaml_dict['diffusion']['noise_scale'] = noise 
                 yaml_dict['validation'] = args_validation
+                yaml_dict['validation']['num_recycles'] = recycle
 
                 file = open(configdir + config_name + ".yml","w")
                 yaml.dump(yaml_dict,file)
                 file.close()
                 counter += 1
-    
-    else:
-        for noise in noise_scale:
-            config_name = name + '_' + str(n) + '_' + setups[counter]
-            yaml_dict['diffusion'] = args_diffusion
-            yaml_dict['diffusion']['name'] = config_name
-            yaml_dict['diffusion']['path'] = resultsdir
-            yaml_dict['diffusion']['contigs'] = new_contig
-            yaml_dict['diffusion']['noise_scale'] = noise 
-            yaml_dict['validation'] = args_validation
-
-            file = open(configdir + config_name + ".yml","w")
-            yaml.dump(yaml_dict,file)
-            file.close()
-            counter += 1
 
         
 
