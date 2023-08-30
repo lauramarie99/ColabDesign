@@ -1,25 +1,26 @@
 general:
   name: "Exp1"
-  configdir: "./configs/"
-  resultsdir: "./outputs/"
-  num_contigs: 10
-  guide_scale: [1,10]
-  noise_scale: [0,1]
-  contigs: "20-50/A130-130/10-40/A176-176/10-40/A208-208/20-50"
+  configdir: "/home/Input/Diffusion/Run1/Configs/"
+  resultsdir: "/home/Results/Diffusion/Run1/"
+  num_contigs: 1
+  guide_scale: [1,10,100]
+  noise_scale: [1]
+  num_recycles: [1,3]
+  contigs: "40-40/A130-130/25-25/A176-176/25-25/A208-208/40-40"
 
 diffusion:
   pdb: "input_pdbs/7nei_L210T_2pet_15337.pdb"
   iterations: 50
-  num_designs: 4
+  num_designs: 50
   ckpt_override_path: "./RFdiffusion/models/ActiveSite_ckpt.pt"
   enzyme_design: True
   guide_potentials: "type:substrate_contacts,s:1,r_0:8,rep_r_0:5.0,rep_s:2,rep_r_min:1"
   substrate: "2PE"
   symmetry: "null" # ["null", "auto", "cyclic", "dihedral"]
+  deterministic: True
 
 validation:
-  num_seqs: 10
+  num_seqs: 8
   initial_guess: False
-  num_recycles: 1
   use_multimer: False
   rm_aa: ""
