@@ -10,6 +10,7 @@ import pandas as pd
 def getArgs():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input","-i",type=str) # Experiment Folder
+    parser.add_argument("--output","-o",type=str) # Output Folder
     parser.add_argument("--num_recycles","-r",type=int) # Number of recycles (>1)
     parser.add_argument("--use_multimer","-m",type=str) # Use multimer
     args = parser.parse_args()
@@ -157,7 +158,7 @@ else:
                 "homooligomer":copies>1}
 
 exp = args.input.split("/")[-1]
-outdir = f"{args.input}/AF_Redo"
+outdir = f"{args.input}/{args.output}"
 if not os.path.exists(outdir):
     os.makedirs(f"{outdir}/all_pdb")
 predict(entries=entries, args=args, af_model=af_model, exp=exp, af_terms=af_terms,prep_flags=prep_flags, outdir=outdir)
