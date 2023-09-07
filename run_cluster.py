@@ -1,5 +1,5 @@
 # Packages
-import subprocess, glob, time, os
+import subprocess, glob, time, os, argparse
 
 # Create a slurm script
 def create_slurm_script(slurm_path, container, config, script, outdir, name, jobname, 
@@ -143,8 +143,8 @@ def run_diffusion(config_path, slurm_path, container):
     for config_file in config_files:
         name = config_file.split('/')[-1].split('.')[0]
         create_slurm_script(slurm_path=slurm_path,container=container,config=config_file,script="python3.9 /home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/ColabDesign/diffuse.py",
-                            outdir=slurm_path,name=f"{name}_diffusion",jobname=f"diff-{name}", time="24:00:00", mem="10000", cpus=1,
-                            gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",emailType="ALL",excludeNodes='paula02,paula04')
+                            outdir=slurm_path,name=f"{name}_diffusion",jobname=f"diff-{name}", time="01:00:00", mem="10000", cpus=1,
+                            gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",emailType="FAIL",excludeNodes='paula02,paula04')
     job_ids, errors = run_all_slurm_scripts(slurm_path=slurm_path)
     return job_ids, errors
 
@@ -169,9 +169,9 @@ def run_validation(config_path, slurm_path, diffusion_job_ids, container):
         slurm_name = f"{exp_name}_validation"
         create_slurm_script(slurm_path=slurm_path,container=container,config=config_file,
                 script="python3 /home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/ColabDesign/validate.py",
-                outdir=slurm_path,name=slurm_name,jobname=f"val-{exp_name}", time="24:00:00", 
-                mem="10000", cpus=1,gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",
-                emailType="ALL",excludeNodes='paula02,paula04', dependency=job_id)
+                outdir=slurm_path,name=slurm_name,jobname=f"val-{exp_name}", time="01:00:00", 
+                mem="10000", cpus=1, gpu="a30:1",partition="paula",email="zo23uqar@studserv.uni-leipzig.de",
+                emailType="FAIL",excludeNodes='paula02,paula04', dependency=job_id)
     validation_job_ids, errors = run_all_slurm_scripts(slurm_path=slurm_path)
     return validation_job_ids, validation_errors
 
@@ -181,10 +181,14 @@ MAIN
 """
 
 # Global variables
+argParser = argparse.ArgumentParser()
+argParser.add_argument('-r','--run')                                          # name of run
+args = argParser.parse_args()
+
 diffusion_container = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/proteindesign.sif"
 validation_container = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/colabdesign1.1.0.sif"
-config_path = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/Test_Enzyme/Configs/"
-slurm_path = "/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/Test_Enzyme/Slurm/"
+config_path = f"/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/{args.run}/Configs/"
+slurm_path = f"/home/sc.uni-leipzig.de/lu341pjya/ProteinDesign/Input/Diffusion/{args.run}/Slurm/"
 
 
 # Run diffusion and validation
@@ -193,10 +197,10 @@ if not os.path.exists(f"{slurm_path}Diffusion"):
    os.makedirs(f"{slurm_path}Validation")
 diffusion_job_ids, diffusion_errors = run_diffusion(config_path=config_path,slurm_path=f"{slurm_path}Diffusion",container=diffusion_container)
 print("Diffusion jobs submitted")
-print("Errors:", diffusion_errors)
+# print("Errors:", diffusion_errors)
 validation_job_ids, validation_errors = run_validation(config_path=config_path,slurm_path=f"{slurm_path}Validation",diffusion_job_ids=diffusion_job_ids,container=validation_container)
 print("Validation jobs submitted")
-print("Errors:", validation_errors)
+# print("Errors:", validation_errors)
 for name,job_id in validation_job_ids.items():
     while not check_if_job_is_done(job_id=job_id):
         time.sleep(30)
