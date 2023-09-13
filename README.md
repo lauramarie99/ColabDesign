@@ -1,3 +1,5 @@
+## README not up to date!!
+
 # Protein Design with RFDiffusion and ProteinMPNN
 Proteins are designed using RFDiffusion based on given constraints. 
 Sequences are generated using ProteinMPNN and validated using AlphaFold.\
