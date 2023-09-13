@@ -57,16 +57,16 @@ def initModel(flags, protocol):
     return af_model
 
 # Run af
-def runAF(af_model, seq, args, af_terms, outdir, id):
+def runAF(af_model, seq, args, outdir, id):
     # Predict structure
     af_model.predict(seq=seq, num_recycles=args.num_recycles, verbose=False)
     # Save pdb file
-    af_model.save_current_pdb(f"{outdir}/all_pdb/{id}.pdb")
+    af_model.save_current_pdb(f"{outdir}/{id}.pdb")
     return af_model.aux["log"]
 
 # Get fasta seq
-def getSeq(input:str):
-    fasta = glob.glob(f"{input}/Validation/*.fasta")[0]
+def getSeq(path:str):
+    fasta = glob.glob(path)[0]
     with open(fasta,"r") as f:
         entries = f.read().splitlines() 
     return entries
@@ -107,7 +107,7 @@ def predict(entries:list, args:dict, af_model, exp:str, af_terms:list, prep_flag
             out["score"].append(score)
         
         id = f"design{design_number}_n{seq_number}"
-        results = runAF(af_model=af_model, seq=seq, args=args, af_terms=af_terms, outdir=outdir, id=id)
+        results = runAF(af_model=af_model, seq=seq, args=args, outdir=f"{outdir}/all_pdb", id=id)
         for t in af_terms: out[t].append(results[t])
         if "i_pae" in out:
           out["i_pae"][-1] = out["i_pae"][-1] * 31
@@ -126,7 +126,7 @@ def predict(entries:list, args:dict, af_model, exp:str, af_terms:list, prep_flag
 af_terms = ["plddt","ptm","pae","rmsd"]
 copies = 1
 args, use_multimer = getArgs() # get arguments
-entries = getSeq(args.input) # get sequences
+entries = getSeq(f"{args.input}/Validation/*.fasta") # get sequences
 config = glob.glob(f"{args.input}/*.yml")[0] # get config
 contig = getContig(config) # get contig string
 pos,(fixed_chain,free_chain) = get_info(contig) # get info
