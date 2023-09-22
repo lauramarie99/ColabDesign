@@ -1,7 +1,5 @@
-## README not up to date!!
-
-# Protein Design with RFDiffusion and ProteinMPNN
-Proteins are designed using RFDiffusion based on given constraints. 
+# Protein/Enzyme Design with RFdiffusion and ProteinMPNN
+Proteins are designed using RFdiffusion based on given constraints. 
 Sequences are generated using ProteinMPNN and validated using AlphaFold.\
 Have fun!
 
@@ -10,17 +8,16 @@ Have fun!
 - validate.py: Validation (ProteinMPNN + AF2)
 - config_simple: Example config file for unconditional diffusion and validation
 - config_enzyme: Example config file for enzyme design with external potential
-- create_configs.py: Creates configs file based on experimental setup
-- run_cluster.py: Automate slurm job submission in cluster
-- Dockerfile_cluster: Dockerfile
-- diffuse_and_validate.py: Diffusion and Validation in one script
+- create_configs.py: Creates configs file based on experimental setup (for large studies)
+- run_cluster.py: Automate slurm script generation and job submission in cluster
+- Dockerfile_cluster: Dockerfile for diffusion step
+- diffuse_and_validate.py: Diffusion and Validation in one script (not recommended)
 
 ## Setup
-- Build docker container
+- Build docker container (docker file for validation step not provided here)
 - Clone repository
-- Clone RFDiffusion repo inside ColabDesign repo (https://github.com/sokrypton/RFdiffusion)
-- Make outputs directory and get RF models \
-``mkdir outputs``\
+- Clone RFDiffusion repo inside ColabDesign folder (https://github.com/sokrypton/RFdiffusion)
+- Get RF models \
 ``mkdir models && cd models`` \
 ``wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt`` \
 ``wget http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt``
@@ -31,42 +28,38 @@ Have fun!
 ``touch params/done.txt``
 
 ## Get started
-For diffusion and validation the same contig is used. It contains all information needed.
+For the diffusion and validation (ProteinMPNN + AF) steps one contig file is used. It contains all information needed.
+- ckpt_override_path: RFdiffusion model (Base or Active_Site model)
+- contigs: Contig string (Specify always a range, e.g. 16-16 instead of 16!)
+- enzyme_design: Set true if you want to use an external potential
+- guide_potentials: External potential to use
+- iterations: Number of diffusion steps
+- name: Experiment name
+- noise scale: RFdiffusion noise scale
+- num_designs: Number of designs to generate with RFdiffusion
+- path: Directory where to store results
+- pdb: Input structure (the structure where the fixed residues are taken from)
+- substrate: Substrate name (needed for external potential)
+- symmetry: Symmetry settings
+- num_recycles: AF recycles
+- num_seqs: Number of ProteinMPNN sequences
+- rm_aa: Avoid using specific aa, e.g. cysteines
+- use_multimer: Use AF multimer?
 
 ### Run diffusion
 ``python3.9 diffuse.py --config config.yml``
 
 ### Run validation
-``python3.9 diffuse.py --config config.yml``
+``python3.9 validate.py --config config.yml``
 
-## Config Generation
-For generation of the config files, the script create_configs.py can be used.
+## Automation
+For generation of many config files based on a general config file, the script create_configs.py can be used.
+An example general config file is experiment1.yml.
 
+To automatically generate slurm scripts and submit the jobs, the script run_cluster.py can be used.
+You need to modify it for your purposes.
 
-# ColabDesign
-### Making Protein Design accessible to all via Google Colab! 
-- P(structure | sequence)
-  - [TrDesign](/tr) - using TrRosetta for design
-  - [AfDesign](/af) - using AlphaFold for design
-  - [WIP] [RfDesign](https://github.com/RosettaCommons/RFDesign) - using RoseTTAFold for design
-- P(sequence | structure)
-  - [ProteinMPNN](/mpnn)
-  - [WIP] TrMRF
-- P(sequence)
-  - [WIP] [MSA_transformer](/esm_msa)
-  - [WIP] [SEQ](/seq) - (GREMLIN, mfDCA, arDCA, plmDCA, bmDCA, etc)
-- P(structure)
-  - [Rfdiffusion](/rf)
-
-### Where can I chat with other ColabDesign users?
-  - See our [Discord](https://discord.gg/gna8maru7d) channel!
-
-
-### Presentations
-[Slides](https://docs.google.com/presentation/d/1Zy7lf_LBK0_G3e7YQLSPP5aj_-AR5I131fTsxJrLdg4/)
-[Talk](https://www.youtube.com/watch?v=2HmXwlKWMVs)
-
-### Contributors:
+### ColabDesign Contributors:
 - Sergey Ovchinnikov [@sokrypton](https://github.com/sokrypton)
 - Shihao Feng [@JeffSHF](https://github.com/JeffSHF)
 - Justas Dauparas [@dauparas](https://github.com/dauparas)
