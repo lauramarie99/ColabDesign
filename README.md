@@ -14,13 +14,16 @@ Have fun!
 - diffuse_and_validate.py: Diffusion and Validation in one script (not recommended)
 
 ## Setup
-- Build docker container (docker file for validation step not provided here)
-- Clone repository
-- Clone RFDiffusion repo inside ColabDesign folder (https://github.com/sokrypton/RFdiffusion)
+- Build docker/singularity container (only docker file for diffusion step provided)
+- Clone this repository
+- Clone RFdiffusion repository (https://github.com/sokrypton/RFdiffusion)
+- Change path of RFdiffusion repo in diffuse.py
+- cd into RFdiffusion repository
 - Get RF models \
 ``mkdir models && cd models`` \
 ``wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt`` \
 ``wget http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt``
+- cd into ColabDesign repository
 - Get AF models \
 ``mkdir params`` \
 ``aria2c -q -x 16 https://storage.googleapis.com/alphafold/alphafold_params_2022-12-06.tar``\
@@ -50,7 +53,7 @@ For the diffusion and validation (ProteinMPNN + AF) steps one contig file is use
 ``python3.9 diffuse.py --config config.yml``
 
 ### Run validation
-``python3.9 validate.py --config config.yml``
+``python3 validate.py --config config.yml``
 
 ## Automation
 For generation of many config files based on a general config file, the script create_configs.py can be used.
