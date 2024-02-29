@@ -55,12 +55,12 @@ For the diffusion and validation (ProteinMPNN + AF) steps one contig file is use
 ### Run validation
 ``python3 validate.py --config config.yml``
 
-## Automation
+## Large scale studies
 For generation of many config files based on a general config file, the script create_configs.py can be used.
 An example general config file is experiment1.yml.
 
 To automatically generate slurm scripts and submit the jobs, the script run_cluster.py can be used.
-You need to modify it for your purposes.
+You need to modify the paths for your purposes.
 
 ### ColabDesign Contributors:
 - Sergey Ovchinnikov [@sokrypton](https://github.com/sokrypton)
