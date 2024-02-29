@@ -4,19 +4,16 @@ import yaml
 import argparse
 import time
 
-
 # Check if AlphaFold parameters are downloaded
 if not os.path.isfile("params/done.txt"):
     raise Exception("AlphaFold parameters not found...")
 
-# Get config file
+# Read config file
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, required=True)
 args = parser.parse_args()
 args = yaml.safe_load(open(args.config))
 args_validation = args["validation"]
-
-# Get ProteinMPNN and AlphaFold arguments
 contigs_str = args["diffusion"]["contigs"]
 print(contigs_str)
 
@@ -44,4 +41,3 @@ opts = ' '.join(opts)
 print("running designability...")
 print(f"python3 ./colabdesign/rf/designability_test.py {opts}")
 os.system(f"python3 ./colabdesign/rf/designability_test.py {opts}")
-# !python colabdesign/rf/designability_test.py {opts}
