@@ -29,6 +29,7 @@ def run_diffusion(contigs, name, path,
                   substrate="2PE",
                   ckpt_override_path="null",
                   enzyme_design=False,
+                  partial_diffusion=False,
                   noise_scale=1,
                   deterministic=False):
     """
@@ -64,8 +65,7 @@ def run_diffusion(contigs, name, path,
             f"inference.num_designs={num_designs}",
             f"denoiser.noise_scale_ca={noise_scale}",
             f"denoiser.noise_scale_frame={noise_scale}",
-            f"inference.ckpt_override_path={ckpt_override_path}",
-            f"diffuser.T={iterations}"]
+            f"inference.ckpt_override_path={ckpt_override_path}"]
 
     contigs = contigs.replace(",", " ").replace(":", " ").split()
     is_fixed, is_free = False, False
@@ -129,6 +129,12 @@ def run_diffusion(contigs, name, path,
         opts.append(f"potentials.guide_scale={guide_scale}")
         opts.append(f"'potentials.guiding_potentials=[\"{guide_potentials}\"]'")
         opts.append(f"potentials.substrate={substrate}")
+
+    # Add number of diffusion steps
+    if partial_diffusion:
+        opts.append(f"diffuser.partial_T={iterations}")
+    else:
+        opts.append(f"diffuser.T={iterations}")
 
     if deterministic:
         opts.append(f"inference.deterministic=True")
