@@ -3,9 +3,6 @@ import sys, random, string, re, os, time
 if 'RFdiffusion' not in sys.path:
   os.environ["DGLBACKEND"] = "pytorch"
   sys.path.append('RFdiffusion')
-from colabdesign.rf.utils import fix_contigs, fix_partial_contigs, fix_pdb, sym_it
-from colabdesign.shared.protein import pdb_to_string
-from rfdiffusion.inference.utils import parse_pdb
 from IPython.display import display
 import subprocess
 import yaml
@@ -55,6 +52,9 @@ def run_diffusion(contigs, name, path,
     tuple: The updated contigs list and the number of symmetry-equivalent copies.
     """
 
+    from colabdesign.rf.utils import fix_contigs, fix_partial_contigs, fix_pdb, sym_it
+    from colabdesign.shared.protein import pdb_to_string
+    from rfdiffusion.inference.utils import parse_pdb
     # Make output directory
     full_path = f"{path}{name}/Diffusion"
     os.makedirs(full_path, exist_ok=True)
