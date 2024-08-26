@@ -174,7 +174,8 @@ def run_diffusion_aa(type, contigs, name, path,
                     num_designs=10,
                     partial_diffusion=False,
                     noise_scale=1,
-                    deterministic=False):
+                    deterministic=False,
+                    substrate='2PE'):
     """
     This function runs a diffusion-all-atom simulation using provided input parameters, 
     applies contigs processing, and generates the final PDB structures.
@@ -209,7 +210,8 @@ def run_diffusion_aa(type, contigs, name, path,
             f"inference.num_designs={num_designs}",
             f"denoiser.noise_scale_ca={noise_scale}",
             f"denoiser.noise_scale_frame={noise_scale}",
-            f"diffuser.T={iterations}"]
+            f"diffuser.T={iterations}",
+            f"inference.ligand={substrate}"]
 
     contigs = contigs.replace("/", ",").split()
     opts.append(f"'contigmap.contigs=[{' '.join(contigs)}]'")
