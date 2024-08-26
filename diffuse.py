@@ -199,7 +199,7 @@ def run_diffusion_aa(type, contigs, name, path,
     """
 
     # Make output directory
-    full_path = f"{path}{name}/Diffusion"
+    full_path = f"{path}/{name}/Diffusion"
     os.makedirs(full_path, exist_ok=True)
     output_prefix = f"{full_path}/{name}"
     copies = 1
@@ -226,7 +226,7 @@ def run_diffusion_aa(type, contigs, name, path,
 
     # Create the command with options to run the inference script
     opts_str = " ".join(opts)
-    cmd = f"../rf_diffusion_all_atom/run_inference.py {opts_str}"
+    cmd = f"cd ./rf_diffusion_all_atom && python run_inference.py {opts_str}"
     print(cmd)
     # Run the command using a helper function "run"
     run(cmd)
