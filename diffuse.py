@@ -17,7 +17,7 @@ def run(command):
     return_code = process.wait()
 
 # Run diffusion
-def run_diffusion(contigs, name, path,
+def run_diffusion(type, contigs, name, path,
                   pdb=None, 
                   iterations=50,
                   num_designs=10,
@@ -168,7 +168,7 @@ def run_diffusion(contigs, name, path,
     return contigs, copies
 
 # Run diffusion
-def run_diffusion_aa(contigs, name, path,
+def run_diffusion_aa(type, contigs, name, path,
                     pdb=None, 
                     iterations=50,
                     num_designs=10,
