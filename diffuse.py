@@ -167,6 +167,67 @@ def run_diffusion(contigs, name, path,
 
     return contigs, copies
 
+# Run diffusion
+def run_diffusion_aa(contigs, name, path,
+                    pdb=None, 
+                    iterations=50,
+                    num_designs=10,
+                    partial_diffusion=False,
+                    noise_scale=1,
+                    deterministic=False):
+    """
+    This function runs a diffusion-all-atom simulation using provided input parameters, 
+    applies contigs processing, and generates the final PDB structures.
+
+    Args:
+    contigs (str): Input contigs string to define the fixed and free portions.
+    name (str): Experiment name.
+    path (str): The output directory path for generated results.
+    pdb (str, optional): The PDB file path. Defaults to None.
+    iterations (int, optional): Number of diffusion iterations. Defaults to 50.
+    num_designs (int, optional): Number of designs to generate. Defaults to 10.
+    guide_scale (float): Scaling factor for guiding potentials. Defaults to 1.
+    guide_potentials (str): The guiding potentials string. Defaults to an empty string.
+    substrate (str): The substrate design. Defaults to "2PE".
+    ckpt_override_path (str): The path of the checkpoint file. Defaults to "null".
+    enzyme_design (bool, optional): If True, generates substrate pockets by adding guiding potential. Defaults to False.
+    noise_scale (int, optional): Change noise_scale_ca and noise_scale_frame.
+    deterministic (bool, optional): Deterministic initialization.
+    
+    Returns:
+    tuple: The updated contigs list and the number of symmetry-equivalent copies.
+    """
+
+    # Make output directory
+    full_path = f"{path}{name}/Diffusion"
+    os.makedirs(full_path, exist_ok=True)
+    output_prefix = f"{full_path}/{name}"
+
+    # Add general options
+    opts = [f"inference.output_prefix={output_prefix}", 
+            f"inference.num_designs={num_designs}",
+            f"denoiser.noise_scale_ca={noise_scale}",
+            f"denoiser.noise_scale_frame={noise_scale}",
+            f"diffuser.T={iterations}"]
+
+    contigs = contigs.replace("/", ",").split()
+    opts.append(f"'contigmap.contigs=[{' '.join(contigs)}]'")
+
+    if deterministic:
+        opts.append(f"inference.deterministic=True")
+
+    print("output:", full_path)
+    print("contigs:", contigs)
+
+    # Create the command with options to run the inference script
+    opts_str = " ".join(opts)
+    cmd = f"python3 ../rf_diffusion_all_atom/run_inference.py {opts_str}"
+    print(cmd)
+    # Run the command using a helper function "run"
+    run(cmd)
+
+    return contigs, copies
+
 
 # Read given config
 parser = argparse.ArgumentParser()
@@ -189,7 +250,10 @@ for k,v in args_diffusion.items():
     args_diffusion[k] = v.replace("'","").replace('"','')
 
 # Run diffusion
-contigs, copies = run_diffusion(**args_diffusion)
+if args_diffusion["type"] == "all-atom":
+     contigs, copies = run_diffusion_aa(**args_diffusion)
+else:
+    contigs, copies = run_diffusion(**args_diffusion)
 
 # Copy config to results directory
 os.system(f"cp {config} {path}{name}/")
