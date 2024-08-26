@@ -203,7 +203,7 @@ def run_diffusion_aa(type, contigs, name, path,
     os.makedirs(full_path, exist_ok=True)
     output_prefix = f"{full_path}/{name}"
     copies = 1
-    
+
     # Add general options
     opts = [f"inference.output_prefix={output_prefix}", 
             f"inference.num_designs={num_designs}",
@@ -213,6 +213,10 @@ def run_diffusion_aa(type, contigs, name, path,
 
     contigs = contigs.replace("/", ",").split()
     opts.append(f"'contigmap.contigs=[{' '.join(contigs)}]'")
+
+    pdb_filename = f"{full_path}/input.pdb"
+    os.system(f"cp {pdb} {pdb_filename}")
+    opts.append(f"inference.input_pdb={pdb_filename}")
 
     if deterministic:
         opts.append(f"inference.deterministic=True")
