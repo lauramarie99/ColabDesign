@@ -3,7 +3,6 @@ import sys, random, string, re, os, time
 if 'RFdiffusion' not in sys.path:
   os.environ["DGLBACKEND"] = "pytorch"
   sys.path.append('RFdiffusion')
-from IPython.display import display
 import subprocess
 import yaml
 import argparse
@@ -47,12 +46,13 @@ def run_diffusion(type, contigs, name, path,
     enzyme_design (bool, optional): If True, generates substrate pockets by adding guiding potential. Defaults to False.
     noise_scale (int, optional): Change noise_scale_ca and noise_scale_frame.
     deterministic (bool, optional): Deterministic initialization.
+    partial_diffusion (bool, optional): Carry out partial_diffusion
     
     Returns:
     tuple: The updated contigs list and the number of symmetry-equivalent copies.
     """
 
-    from colabdesign.rf.utils import fix_contigs, fix_partial_contigs, fix_pdb, sym_it
+    from colabdesign.rf.utils import fix_contigs, fix_pdb
     from colabdesign.shared.protein import pdb_to_string
     from rfdiffusion.inference.utils import parse_pdb
     # Make output directory
@@ -172,10 +172,9 @@ def run_diffusion_aa(type, contigs, name, path,
                     pdb=None, 
                     iterations=50,
                     num_designs=10,
-                    partial_diffusion=False,
                     noise_scale=1,
                     deterministic=False,
-                    substrate='2PE'):
+                    substrate="2PE"):
     """
     This function runs a diffusion-all-atom simulation using provided input parameters, 
     applies contigs processing, and generates the final PDB structures.
@@ -187,11 +186,7 @@ def run_diffusion_aa(type, contigs, name, path,
     pdb (str, optional): The PDB file path. Defaults to None.
     iterations (int, optional): Number of diffusion iterations. Defaults to 50.
     num_designs (int, optional): Number of designs to generate. Defaults to 10.
-    guide_scale (float): Scaling factor for guiding potentials. Defaults to 1.
-    guide_potentials (str): The guiding potentials string. Defaults to an empty string.
-    substrate (str): The substrate design. Defaults to "2PE".
-    ckpt_override_path (str): The path of the checkpoint file. Defaults to "null".
-    enzyme_design (bool, optional): If True, generates substrate pockets by adding guiding potential. Defaults to False.
+    substrate (str): The substrate to build a pocket around. Defaults to "2PE".
     noise_scale (int, optional): Change noise_scale_ca and noise_scale_frame.
     deterministic (bool, optional): Deterministic initialization.
     
