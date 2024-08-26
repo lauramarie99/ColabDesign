@@ -214,7 +214,7 @@ def run_diffusion_aa(type, contigs, name, path,
             f"inference.ligand={substrate}"]
 
     contigs = contigs.replace("/", ",").split()
-    opts.append(f"'contigmap.contigs=[{' '.join(contigs)}]'")
+    opts.append(f"contigmap.contigs=[\'{' '.join(contigs)}\']")
 
     pdb_filename = f"{full_path}/input.pdb"
     os.system(f"cp {pdb} {pdb_filename}")
