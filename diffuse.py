@@ -202,7 +202,8 @@ def run_diffusion_aa(type, contigs, name, path,
     full_path = f"{path}{name}/Diffusion"
     os.makedirs(full_path, exist_ok=True)
     output_prefix = f"{full_path}/{name}"
-
+    copies = 1
+    
     # Add general options
     opts = [f"inference.output_prefix={output_prefix}", 
             f"inference.num_designs={num_designs}",
