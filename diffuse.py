@@ -199,7 +199,6 @@ def run_diffusion_aa(type, contigs, name, path,
     tuple: The updated contigs list and the number of symmetry-equivalent copies.
     """
 
-    from colabdesign.rf.utils import fix_pdb
     # Make output directory
     full_path = f"{path}/{name}/Diffusion"
     os.makedirs(full_path, exist_ok=True)
@@ -233,20 +232,6 @@ def run_diffusion_aa(type, contigs, name, path,
     print(cmd)
     # Run the command using a helper function "run"
     run(cmd)
-
-    # Post-processing: fix PDB structures based on contigs
-    for n in range(num_designs):
-        pdbs = [
-            f"{full_path}/traj/{name}_{n}_pX0_traj.pdb",
-            f"{full_path}/traj/{name}_{n}_Xt-1_traj.pdb",
-            f"{output_prefix}_{n}.pdb"]
-
-        for pdb in pdbs:
-            with open(pdb, "r") as handle:
-                pdb_str = handle.read()
-
-            with open(pdb, "w") as handle:
-                handle.write(fix_pdb(pdb_str, contigs))
 
     return contigs, copies
 
