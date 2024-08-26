@@ -187,13 +187,3 @@ validation_job_ids, validation_errors = run_validation(colabdesign_path=colabdes
                                                        container=validation_container,
                                                        validation_path=validation_path)
 print("Validation jobs submitted")
-
-# Check if validation successful
-for name,job_id in validation_job_ids.items():
-    while not check_if_job_is_done(job_id=job_id):
-        time.sleep(30)
-    exp_name = name[:-11]
-    if check_if_validation_done(name,slurm_path):
-        print("Validation done:", exp_name)
-    else:
-        print("Validation failed:", exp_name)
