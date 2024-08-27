@@ -7,6 +7,10 @@ diffusion:
   iterations: 50
   num_designs: 2
   noise_scale: 1
+  enzyme_design: True
+  guide_potentials: "type:substrate_contacts,s:1,r_0:8,rep_r_0:5.0,rep_s:2,rep_r_min:1"
+  guide_scale: 1
+  substrate: "2PE"
 
 validation:
   num_seqs: 2
