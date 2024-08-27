@@ -39,5 +39,5 @@ opts = ' '.join(opts)
 
 # Run validation script (ProteinMPNN + AlphaFold)
 print("running designability...")
-print(f"python3 ./colabdesign/rf/designability_test.py {opts}")
-os.system(f"python3 ./colabdesign/rf/designability_test.py {opts}")
+print(f"python3.8 designability_test.py {opts}")
+os.system(f"python3.8 designability_test.py {opts}")
