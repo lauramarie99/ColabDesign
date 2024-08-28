@@ -7,7 +7,8 @@ Sequences are generated using ProteinMPNN and validated using AlphaFold2. Have f
 - validate.py: Validation (ProteinMPNN + AF2)
 - configs: Folder containing example config files for diffusion and validation
 - run_cluster.py: Slurm script generation and job submission to cluster
-- Dockerfile_cluster: Dockerfile for diffusion step
+- RFdiffusion_dockerfile: Dockerfile for RFdiffusion step
+- Validation_GPU_dockerfile: Dockerfile for validation step
 
 ## Setup
 
@@ -21,7 +22,7 @@ aria2c -q -x 16 https://storage.googleapis.com/alphafold/alphafold_params_2022-1
 tar -xf alphafold_params_2022-12-06.tar -C params
 touch params/done.txt
 ```
-- Get/Build container to run ColabDesign
+- Build container using Validation_GPU_dockerfile
 
 ### RFdiffusion
 - Clone RFdiffusion repository (https://github.com/lauramarie99/RFdiffusion)
@@ -32,7 +33,7 @@ mkdir models && cd models
 wget http://files.ipd.uw.edu/pub/RFdiffusion/6f5902ac237024bdd0c176cb93063dc4/Base_ckpt.pt
 wget http://files.ipd.uw.edu/pub/RFdiffusion/5532d2e1f3a4738decd58b19d633b3c3/ActiveSite_ckpt.pt
 ```
-- Build docker/singularity container based on provided dockerfile
+- Build docker/singularity container based on provided dockerfile RFdiffusion_dockerfile
 - Adapt path to RFdiffusion in diffuse.py
 
 
@@ -56,6 +57,7 @@ git submodule update
 
 ## Get started
 For the diffusion and validation (ProteinMPNN + AF) steps, only one single config file is used. Example config files can be found in the folder configs.
+- type: base (RFdiffusion) or all-atom (RFdiffusion all-atom)
 - ckpt_override_path: Override RFdiffusion model path (e.g. Active_Site model)
 - contigs: Contig string (Specify always a range, e.g. 16-16 instead of 16!)
 - enzyme_design: Set true if you want to use an external potential
@@ -80,7 +82,7 @@ python3.9 diffuse.py --config config.yml
 
 ### Run validation
 ```
-python3 validate.py --config config.yml
+python3.8 validate.py --config config.yml
 ```
 
 ## Large scale studies
