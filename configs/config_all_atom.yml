@@ -1,0 +1,17 @@
+diffusion:
+  type: "all-atom"
+  name: "Test_aa"
+  path: "./outputs/"
+  contigs: "50-50/A130-130/45-45/A176-176/31-31/A208-208/50-50"
+  pdb: "input_pdbs/7nei_L210T_2pet_15337.pdb"
+  iterations: 50
+  num_designs: 2
+  noise_scale: 1
+  substrate: "2PE"
+
+validation:
+  num_seqs: 2
+  initial_guess: False
+  num_recycles: 1
+  use_multimer: False
+  rm_aa: ""

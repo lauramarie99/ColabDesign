@@ -1,0 +1,17 @@
+diffusion:
+  type: "base"
+  name: "Test_partialDiff"
+  path: "./outputs/"
+  contigs: "A1-36/3-3/A40-40/9-9/A50-167"
+  pdb: "input_pdbs/input.pdb"
+  iterations: 20
+  num_designs: 10
+  partial_diffusion: True
+  noise_scale: 1
+
+validation:
+  num_seqs: 16
+  initial_guess: False
+  num_recycles: 3
+  use_multimer: False
+  rm_aa: "" # Bias, make aa less likely

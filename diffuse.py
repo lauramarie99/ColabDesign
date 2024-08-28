@@ -3,10 +3,6 @@ import sys, random, string, re, os, time
 if 'RFdiffusion' not in sys.path:
   os.environ["DGLBACKEND"] = "pytorch"
   sys.path.append('RFdiffusion')
-from colabdesign.rf.utils import fix_contigs, fix_partial_contigs, fix_pdb, sym_it
-from colabdesign.shared.protein import pdb_to_string
-from rfdiffusion.inference.utils import parse_pdb
-from IPython.display import display
 import subprocess
 import yaml
 import argparse
@@ -20,7 +16,7 @@ def run(command):
     return_code = process.wait()
 
 # Run diffusion
-def run_diffusion(contigs, name, path,
+def run_diffusion(type, contigs, name, path,
                   pdb=None, 
                   iterations=50,
                   num_designs=10,
@@ -50,11 +46,15 @@ def run_diffusion(contigs, name, path,
     enzyme_design (bool, optional): If True, generates substrate pockets by adding guiding potential. Defaults to False.
     noise_scale (int, optional): Change noise_scale_ca and noise_scale_frame.
     deterministic (bool, optional): Deterministic initialization.
+    partial_diffusion (bool, optional): Carry out partial_diffusion
     
     Returns:
     tuple: The updated contigs list and the number of symmetry-equivalent copies.
     """
 
+    from colabdesign.rf.utils import fix_contigs, fix_pdb
+    from colabdesign.shared.protein import pdb_to_string
+    from rfdiffusion.inference.utils import parse_pdb
     # Make output directory
     full_path = f"{path}{name}/Diffusion"
     os.makedirs(full_path, exist_ok=True)
@@ -167,6 +167,69 @@ def run_diffusion(contigs, name, path,
 
     return contigs, copies
 
+# Run diffusion
+def run_diffusion_aa(type, contigs, name, path,
+                    pdb=None, 
+                    iterations=50,
+                    num_designs=10,
+                    noise_scale=1,
+                    deterministic=False,
+                    substrate="2PE"):
+    """
+    This function runs a diffusion-all-atom simulation using provided input parameters, 
+    applies contigs processing, and generates the final PDB structures.
+
+    Args:
+    contigs (str): Input contigs string to define the fixed and free portions.
+    name (str): Experiment name.
+    path (str): The output directory path for generated results.
+    pdb (str, optional): The PDB file path. Defaults to None.
+    iterations (int, optional): Number of diffusion iterations. Defaults to 50.
+    num_designs (int, optional): Number of designs to generate. Defaults to 10.
+    substrate (str): The substrate to build a pocket around. Defaults to "2PE".
+    noise_scale (int, optional): Change noise_scale_ca and noise_scale_frame.
+    deterministic (bool, optional): Deterministic initialization.
+    
+    Returns:
+    tuple: The updated contigs list and the number of symmetry-equivalent copies.
+    """
+
+    # Make output directory
+    full_path = f"{path}/{name}/Diffusion"
+    os.makedirs(full_path, exist_ok=True)
+    output_prefix = f"{full_path}/{name}"
+    copies = 1
+
+    # Add general options
+    opts = [f"inference.output_prefix={output_prefix}", 
+            f"inference.num_designs={num_designs}",
+            f"denoiser.noise_scale_ca={noise_scale}",
+            f"denoiser.noise_scale_frame={noise_scale}",
+            f"diffuser.T={iterations}",
+            f"inference.ligand={substrate}"]
+
+    contigs = contigs.replace("/", ",").split()
+    opts.append(f"contigmap.contigs=[\\'{' '.join(contigs)}\\']")
+
+    pdb_filename = f"{full_path}/input.pdb"
+    os.system(f"cp {pdb} {pdb_filename}")
+    opts.append(f"inference.input_pdb={pdb_filename}")
+
+    if deterministic:
+        opts.append(f"inference.deterministic=True")
+
+    print("output:", full_path)
+    print("contigs:", contigs)
+
+    # Create the command with options to run the inference script
+    opts_str = " ".join(opts)
+    cmd = f"cd ./rf_diffusion_all_atom && python run_inference.py {opts_str}"
+    print(cmd)
+    # Run the command using a helper function "run"
+    run(cmd)
+
+    return contigs, copies
+
 
 # Read given config
 parser = argparse.ArgumentParser()
@@ -189,7 +252,10 @@ for k,v in args_diffusion.items():
     args_diffusion[k] = v.replace("'","").replace('"','')
 
 # Run diffusion
-contigs, copies = run_diffusion(**args_diffusion)
+if args_diffusion["type"] == "all-atom":
+     contigs, copies = run_diffusion_aa(**args_diffusion)
+else:
+    contigs, copies = run_diffusion(**args_diffusion)
 
 # Copy config to results directory
 os.system(f"cp {config} {path}{name}/")
