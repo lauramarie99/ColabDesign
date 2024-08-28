@@ -2,6 +2,8 @@
 Proteins are designed using RFdiffusion based on given constraints. 
 Sequences are generated using ProteinMPNN and validated using AlphaFold2. Have fun!
 
+New updated repository: https://github.com/lauramarie99/ProtDesign
+
 ## Overview
 - diffuse.py: Diffusion (RFdiffusion or RFdiffusion all-atom)
 - validate.py: Validation (ProteinMPNN + AF2)
