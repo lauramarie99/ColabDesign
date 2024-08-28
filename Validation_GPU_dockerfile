@@ -1,0 +1,39 @@
+FROM nvcr.io/nvidia/cuda:11.6.2-cudnn8-devel-ubuntu20.04
+
+# Set up environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DGLBACKEND="pytorch"
+
+# Update and install required packages
+RUN apt-get update && apt-get install -y --no-install-recommends \ 
+  wget \
+  ca-certificates \
+  git \
+  build-essential \
+  curl \
+  aria2 \
+  python3-pip \
+  unzip
+
+RUN apt-get -q update \ 
+  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+  git \
+  python3.8 \
+  python3-pip \
+  && python3.8 -m pip install -q -U --no-cache-dir pip \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get autoremove -y \
+  && apt-get clean
+
+RUN apt update && apt install git -y
+RUN python3.8 -m pip -q install git+https://github.com/sokrypton/ColabDesign.git
+RUN python3.8 -m pip install ipykernel
+RUN pip install -q -U --no-cache-dir \
+    jaxlib==0.3.22+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html \
+    jax==0.3.23 \
+    numpy==1.23.4 \
+    scipy==1.9.3 \ 
+    dm_haiku==0.0.7 \
+    dm_tree==0.1.7 \
+    chex==0.1.5 \
+    optax==0.1.3
